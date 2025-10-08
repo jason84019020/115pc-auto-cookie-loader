@@ -1,6 +1,6 @@
 const URL_REGEX = /^https:\/\/115\.com/;
 const COOKIE_DOMAIN = "115.com";
-const COOKIE_URL = `http://${COOKIE_DOMAIN}/`;
+const COOKIE_URL = `https://${COOKIE_DOMAIN}/`;
 const COOKIE_NAMES = ["CID", "SEID", "UID", "KID"];
 const COOKIE_FILE_PATH = "./cookie.json";
 const EXPIRATION_DATE = Math.floor(Date.now() / 1000) + 3600 * 24 * 90;
@@ -71,6 +71,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   if (!URL_REGEX.test(tab.url)) return;
   // 防止重複 reload
   if (reloadedTabs.has(tabId)) return;
+
   if (await writeCookies()) {
     reloadedTabs.add(tabId);
     setTimeout(() => chrome.tabs.reload(tabId), 200);
