@@ -16,7 +16,12 @@ async function loadCookieJSON() {
     const url = chrome.runtime.getURL(COOKIE_FILE_PATH);
     const resp = await fetch(url);
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    return await resp.json();
+    let text = await resp.text();
+    // 去掉 BOM
+    text = text.replace(/^\uFEFF/, "");
+    // CRLF 轉 LF
+    text = text.replace(/\r\n?/g, "\n");
+    return JSON.parse(text);
   } catch (err) {
     console.warn("讀取 cookie.json 錯誤，使用空資料:", err);
     return {};
