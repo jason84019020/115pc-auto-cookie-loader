@@ -30,15 +30,15 @@ async function loadCookieJSON() {
 
 async function writeCookies() {
   const cookiesFromFile = await loadCookieJSON();
-  const cookiesRaw = await chrome.cookies.getAll({ domain: COOKIE_DOMAIN });
-  const cookiesFromBrowser = Object.fromEntries(
-    cookiesRaw.map((cookie) => [cookie.name, cookie.value])
-  );
 
   let changed = false;
   for (const name of COOKIE_NAMES) {
     const cookieValueFromFile = cookiesFromFile[name] || undefined;
-    const cookieValueFromBrowser = cookiesFromBrowser[name] || undefined;
+    const cookieFromBrowser = await chrome.cookies.get({
+      url: COOKIE_URL,
+      name: name,
+    });
+    const cookieValueFromBrowser = cookieFromBrowser?.value;
 
     // 1. 檢查檔案中的 cookie 是否有效
     // 2. 檢查檔案中的 cookie 是否與瀏覽器相同
@@ -60,6 +60,7 @@ async function writeCookies() {
         expirationDate: EXPIRATION_DATE,
       });
       changed = true;
+      console.log(`設定 cookie ${name} 成功`);
     } catch (err) {
       console.warn(`設定 cookie ${name} 失敗:`, err);
     }
