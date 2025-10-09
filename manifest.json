@@ -4,10 +4,9 @@
   "version": "1.0.0",
   "description": "115瀏覽器 cookie 自動加載工具",
   "permissions": ["cookies", "tabs"],
-  "host_permissions": ["https://115.com/*"],
+  "host_permissions": ["https://115.com/*", "https://*.115.com/*"],
   "background": {
-    "service_worker": "service-worker.js",
-    "type": "module"
+    "service_worker": "service-worker.js"
   },
   "web_accessible_resources": [
     {
